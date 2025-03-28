@@ -15,6 +15,57 @@ def print_drop_rates():
     '''
     print(t)
 
+def banner():
+    banner = '''
+██████╗ █████╗ ███████╗███████╗                   
+██╔════╝██╔══██╗██╔════╝██╔════╝                   
+██║     ███████║███████╗█████╗                     
+██║     ██╔══██║╚════██║██╔══╝                     
+╚██████╗██║  ██║███████║███████╗                   
+ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝                   
+                                                            
+██████╗ ██████╗ ███████╗███╗   ██╗███████╗██████╗ 
+██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔════╝██╔══██╗
+██║   ██║██████╔╝█████╗  ██╔██╗ ██║█████╗  ██████╔╝
+██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══╝  ██╔══██╗
+╚██████╔╝██║     ███████╗██║ ╚████║███████╗██║  ██║
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
+    by Yapk0
+                                                  
+            '''
+    print(banner)
+
+def menu():
+    print("=======================================================")
+    print("                 Select game mode                      ")
+    print("=======================================================")
+    print("1. Open a case                                         ")
+    print("2. Open multiple cases                                 ")
+    print("3. Find a skin                                         ")
+    print("4. Show skin drop rates                                ")
+    print("5. Exit                                                ")
+    print("=======================================================")
+
+def cases_menu():
+    print("=======================================================")
+    print("1. Kilowatt case                                       ")
+    print("=======================================================")
+
+def choose_a_case(choice):
+    #max cases is 1
+    if choice > 1 or choice <= 0:
+        print("Wrong input")
+        return -1
+
+    if choice == 1:
+        return cases.kilowatt_case
+
+def validate_input(user_input):
+    if user_input <= 0 or user_input > 5:
+        print("Invalid input")
+        exit(2)
+    return None
+
 def open_case(case):
     total_chance = sum(item["chance"] for item in case)
     random_value = random.uniform(0,total_chance)
@@ -24,5 +75,45 @@ def open_case(case):
         cumulative_chance += item["chance"]
         if random_value < cumulative_chance:
             return item["name"]
+    return -1
 
-print(open_case(cases.kilowatt_case))
+def drop_skin(case, skin_name):
+    cases_openned = 0
+    while True:
+        skin = open_case(case)
+        if skin == skin_name:
+            print(skin_name + "dropped")
+            print(f"after {cases_openned} oppened cases")
+            break
+    return None
+
+def single_case_mode():
+    print("What case would you like to open?")
+    cases_menu()
+    while True:
+        choice = int(input("Enter your choice"))
+        if choose_a_case(choice) == -1:
+            print("Wrong input.")
+        else:
+            case = choose_a_case(choice)
+            break
+    while True:
+        print(f'You unboxed {open_case(case)} congrats!')
+        choice = str(input("Would you like to open another one? Y/N"))
+        if choice == 'Y' or choice == '' or choice == '\n':
+            continue
+        if choice == 'N':
+            break
+        else:
+            print("Wrong input.")
+            break
+
+banner()
+menu()
+
+user_input = int(input("Enter your choice: "))
+validate_input(user_input)
+
+if user_input == 1:
+    single_case_mode()
+
