@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import cases
 import random 
 
 def print_drop_rates():
@@ -15,82 +15,14 @@ def print_drop_rates():
     '''
     print(t)
 
-skins = [
-        {"name":"Covert", "chance" : 16},
-    {"name":"Knives and Gloves", "chance": 25},
-    {"name": "Classified", "chance" : 32},
-    {"name": "Restricted", "chance" : 64},
-    {"name": "Mil-Spec", "chance" : 320},
-    {"name":"Industrial Grade", "chance": 1598},
-    {"name":"Consumer Grade", "chance" : 7992 }
-    ]
+def open_case(case):
+    total_chance = sum(item["chance"] for item in case)
+    random_value = random.uniform(0,total_chance)
+    cumulative_chance = 0
 
-def menu():
-    
-    print("Case opening simulator (with cs drop rates)")
-    print("-------------------------------------------")
-    print("1. Open a case                             ")
-    print("2. Auto open cases                         ")
-    print("3. Open until rare (Knife)                 ")
-    print("4. Print drop chances                      ")
+    for item in case:
+        cumulative_chance += item["chance"]
+        if random_value < cumulative_chance:
+            return item["name"]
 
-def open_case(skins):
-    dropped_item = random.randint(0, 10000)
-    total_chance = 0
-
-    for skin in skins:
-        total_chance += skin["chance"]
-        if dropped_item <= total_chance:
-            return skin["name"]
-
-def open_until_rare():
-    cases_opened = 0
-
-    while True:
-        s = open_case(skins)
-        if s == "Knives and Gloves":
-            return cases_opened
-        else:
-            cases_opened += 1
-
-def user_input():
-    user_input = int(input("enter choice 1-4 (Ctrl + C to exit) \n"))
-    if user_input <= 0 or user_input > 4:
-        print("Invalid input.")
-        exit(2)
-    else:
-        return user_input
-
-def open_multiple_cases(count):
-    if count <= 0:
-        print("Number has to be higher than 0 dumbass.")
-        return 0
-    if count > 2000:
-        print("Number is over the limit.")
-        return 0
-    n = 0
-    while n < count:
-        s = open_case(skins) 
-        print(s)
-        n += 1
-    return None 
-
-menu()
-usr_input = user_input()
-
-
-if usr_input == 1:
-    print(open_case(skins))
-    exit(1)
-if usr_input == 2:
-    count = int(input("How many cases would you like to open? (Max is 2000)"))
-    open_multiple_cases(count)
-    exit(1)
-if usr_input == 3:
-    cases_opened = open_until_rare()
-    print("Rare found!")
-    print(f'{cases_opened} cases opened')
-    exit(1)
-if usr_input == 4:
-    print_drop_rates()
-    exit(1)
+print(open_case(cases.kilowatt_case))
